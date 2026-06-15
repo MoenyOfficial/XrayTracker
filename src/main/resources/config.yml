@@ -1,0 +1,86 @@
+# ==========================================
+#        XrayTracker Configuration
+# ==========================================
+
+# Database Storage System Configuration
+# Supported types:
+# - JSON   : Uses a local flat JSON file (e.g. data.json). Simple, no setup required. Good for small servers.
+# - SQLITE : Uses a local SQLite file (e.g. data.db). High performance, no external server required. Recommended.
+# - MYSQL  : Uses a remote MySQL/MariaDB database. Best for multi-server networks and enterprise setups.
+database:
+  type: SQLITE # Options: JSON, SQLITE, MYSQL
+  pool-size: 10
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "xraytracker"
+    username: "root"
+    password: ""
+
+# Discord Webhook Alerts
+# Provide a Discord webhook URL here to automatically receive high-risk xray alerts in your Discord staff channels.
+# Leave blank to disable this feature.
+discord-webhook-url: ""
+
+# Tracked Ore Types
+# Only blocks in this list will be logged and analyzed for xray suspicion.
+tracked-ores:
+  - DIAMOND_ORE
+  - DEEPSLATE_DIAMOND_ORE
+  - ANCIENT_DEBRIS
+  - GOLD_ORE
+  - NETHER_GOLD_ORE
+
+# Alert Thresholds & Cooldowns
+alert-threshold: 12                # Recent suspicion score required to trigger a standard staff alert
+alert-cooldown-seconds: 120        # Time between alerts per player to prevent alert spam (standard alerts)
+high-risk-alert-cooldown-seconds: 45 # Time between alerts for high-risk flags (streak, burst, etc.)
+suspicion-window-seconds: 60       # Window of time (in seconds) to analyze mining activity for recent scores
+
+# Algorithmic Detection Tuning
+single-trigger-score-threshold: 16 # Score on a single block break that instantly flags as high-risk
+streak-alert-threshold: 4          # Mining this many tracked ores in a row triggers a high-risk streak alert
+cluster-alert-threshold: 4         # Mining this many ores in the same chunk recently flags as a cluster alert
+cluster-count-threshold: 4         # Count of nearby blocks considered a cluster
+streak-window-seconds: 45          # Maximum time difference between consecutive ores to count towards a streak
+streak-bonus-per-hit: 2            # Additional suspicion added for each consecutive hit in a streak
+max-streak-bonus: 8                # Cap on how much suspicion bonus a streak can add
+proximity-bonus-distance: 6.0      # Max distance (in blocks) to count ores as adjacent/proximal
+proximity-bonus: 2                 # Suspicion added if ores are mined close to each other
+layer-bonus-y-delta: 2             # Max Y difference to count ores as being in the same layer/depth
+layer-bonus: 1                     # Suspicion added for mining on the same level/layer
+chunk-bonus: 2                     # Suspicion added if mined blocks are in the same chunk
+burst-window-seconds: 30           # Window (in seconds) to analyze for rapid burst mining
+burst-window-size: 10              # Number of recent breaks kept in memory for burst calculations
+burst-count-threshold: 4           # Breaks in window to classify as standard burst mining (+3 score)
+burst-bonus: 3
+burst-hard-threshold: 7            # Breaks in window to classify as hard burst mining (+5 score)
+burst-hard-bonus: 5
+
+# Mining & Path Visualizer Settings
+mining-y-level: 64                 # Log all mined blocks below or at this Y-level to render mining paths
+path-max-points: 200               # Max path points to draw for highlighting
+path-visibility-seconds: 90        # Duration (in seconds) that the visualized block path stays visible
+path-particle-refresh-ticks: 15    # Frequency of particle updates (lower = more particles, more lag)
+path-particle-max-points: 140      # Max visible points drawn as particles at once
+
+# Database Records Limits
+# Limits stored logs per player to prevent the database from growing indefinitely.
+max-mining-records-per-player: 2000
+max-trigger-reports-per-player: 500
+
+# Base Suspicion Scores by Ore Type
+default-ore-score: 2
+ore-score:
+  DIAMOND_ORE: 4
+  DEEPSLATE_DIAMOND_ORE: 4
+  ANCIENT_DEBRIS: 5
+  GOLD_ORE: 2
+  NETHER_GOLD_ORE: 2
+
+# Depth Bonus
+# Adds suspicion if the ore is mined deep underground, where xraying is more common.
+depth-bonus:
+  enabled: true
+  y-max: 20                        # Maximum Y level to apply the depth bonus
+  score: 2                         # Suspicion score added if mined below y-max

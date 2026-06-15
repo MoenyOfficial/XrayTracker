@@ -1,0 +1,16 @@
+name: XrayTracker
+version: 2.0
+main: me.xraid.xraytracker.XrayTracker
+api-version: 1.21
+commands:
+  xt:
+    description: XrayTracker admin command
+    usage: /xt [open|stats|top|triggers|clear|reload]
+    aliases: [xraytracker]
+    permission: xraytracker.admin
+permissions:
+  xraytracker.admin:
+    default: op
+  xraytracker.bypass:
+    default: false
+    description: Bypasses xray block break logs and alerts
